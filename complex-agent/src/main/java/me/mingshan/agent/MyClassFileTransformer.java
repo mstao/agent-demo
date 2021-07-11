@@ -40,28 +40,40 @@ public class MyClassFileTransformer implements ClassFileTransformer {
             return null;
         }
 
-        System.out.println("当前要修改类的全限定名：" + className);
+        System.out.println("要修改类的全限定名：" + className);
 
-        // 获取ClassPool
-        ClassPool classPool = ClassPool.getDefault();
+        return modifyClass(className);
+    }
 
+    private byte[] modifyClass(String className) {
         try {
+            System.out.println("获取ClassPool");
+            // 获取ClassPool
+            ClassPool classPool = ClassPool.getDefault();
+            System.out.println("获取ClassPool成功");
+
+            System.out.println("获取池中的class对象");
             // 获取池中的class对象
             CtClass ctClass = classPool.getCtClass(className.replace("/", "."));
+            System.out.println("找到main方法");
             // 找到main方法
             CtMethod main = ctClass.getDeclaredMethod("main");
 
+            System.out.println("增加一个本地变量");
             // 增加一个本地变量
             main.addLocalVariable("beginTime", CtClass.longType);
 
-            // 在main方法执行之前给beignTime 赋值
+            System.out.println("在main方法执行之前给beignTime 赋值");
+            //System.out.println("在main方法执行之前给beignTime 赋值"); 在main方法执行之前给beignTime 赋值
             main.insertBefore("long beginTime = System.currentTimeMillis();" );
 
+            System.out.println("在main方法执行之后打印耗时");
             // 在main方法执行之后打印耗时
             // System.out.println("总耗时：" + (System.currentTimeMillis() - beginTime));
             main.insertAfter("System.out.println(\"总耗时：\" + (System.currentTimeMillis() - beginTime));");
 
             byte[] bytes = ctClass.toBytecode();
+            System.out.println("返回修改过后的字节码数组");
             // 返回修改过后的字节码数组
             System.out.println("返回的字节码：" + Arrays.toString(bytes));
             return bytes;
