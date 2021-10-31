@@ -12,6 +12,9 @@ import java.util.Arrays;
 /**
  * 可以动态修改载入jvm的字节码数据
  *
+ * https://www.cnblogs.com/javammc/p/12543267.html
+ * https://blog.csdn.net/hosaos/article/details/102931887
+ *
  * @author hanjuntao walkerhan@126.com
  * @date 2021/7/10
  */
@@ -50,6 +53,9 @@ public class MyClassFileTransformer implements ClassFileTransformer {
             System.out.println("获取ClassPool");
             // 获取ClassPool
             ClassPool classPool = ClassPool.getDefault();
+            // 注意此处
+            // https://ask.csdn.net/questions/3535641
+
             System.out.println("获取ClassPool成功");
 
             System.out.println("获取池中的class对象");
@@ -77,7 +83,7 @@ public class MyClassFileTransformer implements ClassFileTransformer {
             // 返回修改过后的字节码数组
             System.out.println("返回的字节码：" + Arrays.toString(bytes));
             return bytes;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             System.out.println("发生异常：" + e.getMessage());
             e.printStackTrace();
         }
